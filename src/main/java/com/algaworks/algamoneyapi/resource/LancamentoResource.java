@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,5 +67,12 @@ public class LancamentoResource {
 	public ResponseEntity<Lancamento> deletar(@PathVariable Long codigo){
 		lancamentoService.deletar(codigo);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@PutMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO')")
+	public ResponseEntity<Lancamento>atualizar(@PathVariable Long codigo, @Validated @RequestBody Lancamento lancamento) {
+		Lancamento lancamentoSalvo = lancamentoService.atualizar(codigo, lancamento);
+		return ResponseEntity.ok().body(lancamentoSalvo);
 	}
 }

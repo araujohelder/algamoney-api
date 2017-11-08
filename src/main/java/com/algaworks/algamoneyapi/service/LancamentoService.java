@@ -1,5 +1,6 @@
 package com.algaworks.algamoneyapi.service;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -51,6 +52,27 @@ public class LancamentoService {
 		Lancamento lancamento = buscarPeloCodigo(codigo);
 		lancamentoRepository.delete(lancamento);;
 		
+	}
+
+	public Lancamento atualizar(Long codigo, Lancamento lancamento) {
+		Lancamento lancamentoSalvo =  buscarPeloCodigo(codigo);
+		if (lancamento.getPessoa().equals(lancamentoSalvo.getPessoa())) {
+			validaPessoa(lancamento);
+		}
+		
+		BeanUtils.copyProperties(lancamento, lancamentoSalvo, "codigo");
+		return lancamentoRepository.save(lancamentoSalvo);
+	}
+
+	private void validaPessoa(Lancamento lancamento) {
+		Pessoa pessoa = null;
+		if (lancamento.getPessoa().getId() != null) {
+			pessoa = pessoaRepository.findOne(lancamento.getPessoa().getId());
+		}
+		
+		if (pessoa == null || pessoa.isInativa()) {
+			throw new PessoaInexistenteOuInativaException();
+		}
 	}
 	
 }
