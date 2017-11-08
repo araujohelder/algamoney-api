@@ -20,6 +20,7 @@ public class Categoria {
 	@Size(min = 3, max = 20)
 	private String nome;
 
+	
 	public long getCodigo() {
 		return codigo;
 	}
